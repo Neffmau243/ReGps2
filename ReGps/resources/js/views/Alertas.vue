@@ -1,13 +1,13 @@
 <template>
   <div class="alertas-view">
-    <div class="container py-8">
+    <div class="container py-10 px-6 max-w-7xl mx-auto">
       <!-- Header -->
-      <div class="mb-6">
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center gap-3">
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-4">
             <div>
-              <h1 class="text-2xl font-bold text-white">Alertas del Sistema</h1>
-              <p class="text-gray-500 text-xs">{{ alertas.length }} alertas registradas</p>
+              <h1 class="text-3xl font-bold text-white">Alertas del Sistema</h1>
+              <p class="text-gray-500 text-sm">{{ alertas.length }} alertas registradas</p>
             </div>
           </div>
         </div>
@@ -74,7 +74,7 @@
       </div>
       
       <!-- Alerts List -->
-      <div class="space-y-4">
+      <div class="space-y-6">
         <div 
           v-for="alerta in filteredAlertas" 
           :key="alerta.AlertaID"

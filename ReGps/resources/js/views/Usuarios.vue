@@ -1,13 +1,13 @@
 <template>
   <div class="usuarios-view min-h-screen">
-    <div class="container py-6 pb-40 max-w-7xl mx-auto px-4">
+    <div class="container py-10 pb-40 max-w-7xl mx-auto px-6">
       <!-- Compact Header -->
-      <div class="mb-6">
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center gap-3">
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-4">
             <div>
-              <h1 class="text-2xl font-bold text-white">Usuarios</h1>
-              <p class="text-gray-500 text-xs">{{ usuarios.length }} registros</p>
+              <h1 class="text-3xl font-bold text-white">Usuarios</h1>
+              <p class="text-gray-500 text-sm">{{ usuarios.length }} registros</p>
             </div>
           </div>
           <button 
@@ -61,7 +61,7 @@
       </div>
       
       <!-- Users List -->
-      <div class="space-y-6">
+      <div class="space-y-8">
         <div 
           v-for="usuario in filteredUsuarios" 
           :key="usuario.UsuarioID"

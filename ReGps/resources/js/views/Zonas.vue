@@ -1,13 +1,13 @@
 <template>
   <div class="zonas-view">
-    <div class="container py-8">
+    <div class="container py-10 px-6 max-w-7xl mx-auto">
       <!-- Header -->
-      <div class="mb-6">
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center gap-3">
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-4">
             <div>
-              <h1 class="text-2xl font-bold text-white">Zonas de Geofencing</h1>
-              <p class="text-gray-500 text-xs">{{ zonas.length }} zonas configuradas</p>
+              <h1 class="text-3xl font-bold text-white">Zonas de Geofencing</h1>
+              <p class="text-gray-500 text-sm">{{ zonas.length }} zonas configuradas</p>
             </div>
           </div>
           <router-link 
@@ -45,7 +45,7 @@
       </div>
       
       <!-- Zones Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div 
           v-for="zona in filteredZonas" 
           :key="zona.ZonaID"

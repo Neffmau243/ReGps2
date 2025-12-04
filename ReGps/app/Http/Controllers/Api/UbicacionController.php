@@ -254,13 +254,26 @@ class UbicacionController extends Controller
         $empleado = $dispositivo->empleado ?? null;
         $usuario = $empleado->usuario ?? null;
         
+        // Nombre del usuario con fallback
+        $userName = 'Usuario Desconocido';
+        if ($empleado) {
+            $userName = $empleado->Nombre . ($empleado->Apellido ? ' ' . $empleado->Apellido : '');
+        } elseif ($usuario) {
+            $userName = $usuario->Nombre ?? $usuario->name ?? 'Usuario Desconocido';
+        }
+        
         // Formatear ubicaciones
         $locations = $ubicaciones->map(function($ubicacion) {
             return [
                 'latitude' => (float) $ubicacion->Latitud,
+                'Latitud' => (float) $ubicacion->Latitud,
                 'longitude' => (float) $ubicacion->Longitud,
+                'Longitud' => (float) $ubicacion->Longitud,
                 'accuracy' => 10.0,
                 'timestamp' => $ubicacion->FechaHora->toIso8601String(),
+                'FechaHora' => $ubicacion->FechaHora->toIso8601String(),
+                'speed' => (float) ($ubicacion->Velocidad ?? 0),
+                'Velocidad' => (float) ($ubicacion->Velocidad ?? 0),
             ];
         });
         
@@ -292,7 +305,9 @@ class UbicacionController extends Controller
             'device' => [
                 'id' => $dispositivo->DispositivoID,
                 'name' => $dispositivo->Modelo ?? 'Dispositivo ' . $dispositivo->DispositivoID,
-                'user_name' => $usuario->Nombre ?? 'Usuario Desconocido',
+                'Modelo' => $dispositivo->Modelo,
+                'user_name' => $userName,
+                'EmpleadoNombre' => $userName,
             ],
             'locations' => $locations,
             'statistics' => [

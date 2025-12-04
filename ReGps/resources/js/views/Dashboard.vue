@@ -1,11 +1,11 @@
 <template>
   <div class="dashboard-view">
-    <div class="container py-8">
+    <div class="container py-10 px-6 max-w-[1600px] mx-auto">
       <!-- Header -->
-      <div class="mb-8 flex items-center justify-between">
+      <div class="mb-10 flex items-center justify-between">
         <div>
-          <h1 class="text-3xl font-bold text-white mb-2">Dashboard</h1>
-          <p class="text-gray-400">Monitoreo en tiempo real de dispositivos GPS</p>
+          <h1 class="text-4xl font-bold text-white mb-3">Dashboard</h1>
+          <p class="text-gray-400 text-lg">Monitoreo en tiempo real de dispositivos GPS</p>
         </div>
         <!-- WebSocket Status Indicator (Mejorado) -->
         <div class="flex items-center gap-2 px-4 py-2 rounded-lg" :class="connectionClass">
@@ -17,7 +17,7 @@
       </div>
       
       <!-- Stats Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
         <div class="stat-card">
           <div class="flex items-center justify-between">
             <div>
@@ -68,7 +68,7 @@
       </div>
       
       <!-- Map and Device List -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Map -->
         <div class="lg:col-span-2">
           <div class="bg-dark-100 rounded-xl border border-primary/20 overflow-hidden">

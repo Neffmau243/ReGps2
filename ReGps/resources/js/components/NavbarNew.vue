@@ -70,9 +70,9 @@
       <div v-if="menuOpen" class="mobile-overlay" @click="closeMenu"></div>
     </transition>
 
-    <!-- Mobile Menu -->
-    <transition name="slide">
-      <div v-if="menuOpen" class="mobile-menu">
+    <!-- Mobile Sidebar Menu -->
+    <transition name="slide-left">
+      <div v-if="menuOpen" class="mobile-sidebar">
         <!-- User Info -->
         <div class="mobile-header">
           <p class="mobile-name">{{ authStore.user?.Nombre }}</p>
@@ -336,19 +336,23 @@ watch(() => route.path, () => {
   backdrop-filter: blur(4px);
 }
 
-/* === MOBILE MENU === */
-.mobile-menu {
+/* === MOBILE SIDEBAR === */
+.mobile-sidebar {
   position: fixed;
-  top: 64px;
-  left: 0;
+  top: 0;
   right: 0;
-  bottom: 0;
+  width: 280px;
+  max-width: 80vw;
+  height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile */
   background: #000000;
   z-index: 49999;
   overflow-y: auto;
-  padding: 20px;
+  overflow-x: hidden;
+  padding: 24px 20px 24px 20px;
   display: flex;
   flex-direction: column;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
   -webkit-overflow-scrolling: touch;
 }
 
@@ -358,6 +362,7 @@ watch(() => route.path, () => {
   border: 1px solid #FF6B35;
   border-radius: 10px;
   margin-bottom: 20px;
+  flex-shrink: 0; /* Prevent header from shrinking */
 }
 
 .mobile-name {
@@ -378,6 +383,7 @@ watch(() => route.path, () => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-bottom: 20px; /* Space before logout button */
 }
 
 .mobile-item {
@@ -415,7 +421,8 @@ watch(() => route.path, () => {
   justify-content: center;
   gap: 12px;
   padding: 16px;
-  margin-top: 20px;
+  margin-top: auto;
+  margin-bottom: 0;
   background: #dc2626;
   border: none;
   border-radius: 8px;
@@ -424,6 +431,7 @@ watch(() => route.path, () => {
   font-weight: bold;
   cursor: pointer;
   transition: background 0.2s;
+  flex-shrink: 0; /* Prevent button from shrinking */
 }
 
 .mobile-btn-logout:active {
@@ -441,18 +449,20 @@ watch(() => route.path, () => {
   opacity: 0;
 }
 
-.slide-enter-active,
-.slide-leave-active {
-  transition: transform 0.3s;
+.slide-left-enter-active,
+.slide-left-leave-active {
+  transition: transform 0.3s ease;
 }
 
-.slide-enter-from,
-.slide-leave-to {
-  transform: translateY(-100%);
+.slide-left-enter-from,
+.slide-left-leave-to {
+  transform: translateX(100%);
 }
 
 /* === RESPONSIVE === */
-@media (max-width: 768px) {
+
+/* Mobile Small (hasta 480px) */
+@media (max-width: 480px) {
   .desktop-nav,
   .desktop-user {
     display: none;
@@ -461,13 +471,124 @@ watch(() => route.path, () => {
   .btn-hamburger {
     display: flex;
   }
+
+  .mobile-sidebar {
+    width: 90vw;
+    max-width: 320px;
+    padding: 20px 16px;
+  }
+
+  .mobile-header {
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+
+  .mobile-name {
+    font-size: 15px;
+  }
+
+  .mobile-role {
+    font-size: 13px;
+  }
+
+  .mobile-item {
+    padding: 14px 12px;
+    font-size: 15px;
+    gap: 12px;
+  }
+
+  .mobile-item i {
+    font-size: 18px;
+  }
+
+  .mobile-btn-logout {
+    padding: 14px;
+    font-size: 15px;
+  }
+
+  .navbar-container {
+    padding: 0 0.75rem;
+  }
+
+  .logo-text {
+    font-size: 18px;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
 }
 
+/* Mobile Medium (481px - 640px) */
+@media (min-width: 481px) and (max-width: 640px) {
+  .desktop-nav,
+  .desktop-user {
+    display: none;
+  }
+
+  .btn-hamburger {
+    display: flex;
+  }
+
+  .mobile-sidebar {
+    width: 300px;
+    max-width: 85vw;
+  }
+}
+
+/* Tablet (641px - 768px) */
+@media (min-width: 641px) and (max-width: 768px) {
+  .desktop-nav,
+  .desktop-user {
+    display: none;
+  }
+
+  .btn-hamburger {
+    display: flex;
+  }
+
+  .mobile-sidebar {
+    width: 320px;
+    max-width: 400px;
+  }
+
+  .mobile-item {
+    padding: 16px 18px;
+    gap: 18px;
+  }
+
+  .mobile-item i {
+    font-size: 22px;
+  }
+}
+
+/* Desktop (769px+) */
 @media (min-width: 769px) {
   .btn-hamburger,
   .mobile-overlay,
-  .mobile-menu {
+  .mobile-sidebar {
     display: none !important;
+  }
+
+  .desktop-nav {
+    display: flex;
+  }
+
+  .desktop-user {
+    display: flex;
+  }
+}
+
+/* Large Desktop (1024px+) - Opcional: mejoras para pantallas grandes */
+@media (min-width: 1024px) {
+  .navbar-container {
+    max-width: 1400px;
+  }
+
+  .nav-item {
+    padding: 12px 20px;
   }
 }
 </style>

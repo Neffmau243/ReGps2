@@ -834,8 +834,8 @@ body {
 /* Device Cards */
 .device-card {
   background: transparent;
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 16px;
+  padding: 28px;
   border: 1px solid rgba(255, 107, 53, 0.2);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
@@ -849,7 +849,7 @@ body {
   left: 0;
   top: 0;
   bottom: 0;
-  width: 3px;
+  width: 4px;
   background: linear-gradient(180deg, #FF6B35 0%, #FF8C5E 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -870,11 +870,112 @@ body {
   transform: translateX(2px);
 }
 
+/* Usuario Cards */
+.usuario-card {
+  background: transparent;
+  border-radius: 16px;
+  padding: 28px;
+  border: 1px solid rgba(255, 107, 53, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.usuario-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #FF6B35 0%, #FF8C5E 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.usuario-card:hover {
+  background: rgba(255, 107, 53, 0.05);
+  border-color: rgba(255, 107, 53, 0.4);
+  box-shadow: 0 4px 16px rgba(255, 107, 53, 0.2);
+}
+
+.usuario-card:hover::before {
+  opacity: 1;
+}
+
+/* Zone Cards */
+.zone-card {
+  background: transparent;
+  border-radius: 16px;
+  padding: 28px;
+  border: 1px solid rgba(255, 107, 53, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.zone-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #FF6B35 0%, #FF8C5E 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.zone-card:hover {
+  background: rgba(255, 107, 53, 0.05);
+  border-color: rgba(255, 107, 53, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(255, 107, 53, 0.2);
+}
+
+.zone-card:hover::before {
+  opacity: 1;
+}
+
+/* Alert Cards */
+.alert-card {
+  background: transparent;
+  border-radius: 16px;
+  padding: 28px;
+  border: 1px solid rgba(255, 107, 53, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.alert-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #FF6B35 0%, #FF8C5E 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.alert-card:hover {
+  background: rgba(255, 107, 53, 0.05);
+  border-color: rgba(255, 107, 53, 0.4);
+  box-shadow: 0 4px 16px rgba(255, 107, 53, 0.2);
+}
+
+.alert-card:hover::before {
+  opacity: 1;
+}
+
 /* Stat Cards */
 .stat-card {
   background-color: var(--color-dark-100);
-  border-radius: 12px;
-  padding: 24px;
+  border-radius: 16px;
+  padding: 28px;
   border: 1px solid rgba(255, 107, 53, 0.2);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);

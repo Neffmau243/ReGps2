@@ -1,13 +1,13 @@
 ```
 <template>
   <div class="historial-view">
-    <div class="container py-8">
+    <div class="container py-10 px-6 max-w-7xl mx-auto">
       <!-- Header -->
-      <div class="mb-6">
-        <div class="flex items-center gap-3 mb-4">
+      <div class="mb-8">
+        <div class="flex items-center gap-4 mb-6">
           <div>
-            <h1 class="text-2xl font-bold text-white">Historial de Rutas</h1>
-            <p class="text-gray-500 text-xs">Visualiza el recorrido histórico</p>
+            <h1 class="text-3xl font-bold text-white">Historial de Rutas</h1>
+            <p class="text-gray-500 text-sm">Visualiza el recorrido histórico</p>
           </div>
         </div>
       </div>
@@ -48,7 +48,7 @@
       </div>
       
       <!-- Results -->
-      <div v-if="historyData" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div v-if="historyData" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Map -->
         <div class="lg:col-span-2">
           <div class="bg-dark-100 rounded-xl border border-primary/20 overflow-hidden">
@@ -71,11 +71,11 @@
             <div class="space-y-3">
               <div>
                 <p class="text-gray-400 text-sm">Dispositivo</p>
-                <p class="text-white font-medium">{{ historyData.device.name }}</p>
+                <p class="text-white font-medium">{{ historyData?.device?.name || historyData?.device?.Modelo || 'N/A' }}</p>
               </div>
               <div>
                 <p class="text-gray-400 text-sm">Usuario</p>
-                <p class="text-white font-medium">{{ historyData.device.user_name }}</p>
+                <p class="text-white font-medium">{{ historyData?.device?.user_name || historyData?.device?.EmpleadoNombre || 'N/A' }}</p>
               </div>
             </div>
           </div>
@@ -92,7 +92,7 @@
                   <i class="bi bi-geo-fill text-info"></i>
                   <span class="text-gray-400">Puntos</span>
                 </div>
-                <span class="text-white font-bold">{{ historyData.statistics.total_points }}</span>
+                <span class="text-white font-bold">{{ historyData?.statistics?.total_points || 0 }}</span>
               </div>
               
               <div class="flex items-center justify-between">
@@ -100,7 +100,7 @@
                   <i class="bi bi-signpost-2-fill text-success"></i>
                   <span class="text-gray-400">Distancia</span>
                 </div>
-                <span class="text-white font-bold">{{ historyData.statistics.distance_km }} km</span>
+                <span class="text-white font-bold">{{ historyData?.statistics?.distance_km || 0 }} km</span>
               </div>
               
               <div class="flex items-center justify-between">
@@ -108,7 +108,7 @@
                   <i class="bi bi-clock-fill text-warning"></i>
                   <span class="text-gray-400">Duración</span>
                 </div>
-                <span class="text-white font-bold">{{ formatDuration(historyData.statistics.duration_minutes) }}</span>
+                <span class="text-white font-bold">{{ formatDuration(historyData?.statistics?.duration_minutes || 0) }}</span>
               </div>
             </div>
           </div>
@@ -121,14 +121,17 @@
             </h3>
             <div class="space-y-3 max-h-[300px] overflow-y-auto scrollbar-thin">
               <div 
-                v-for="(location, index) in historyData.locations.slice(0, 10)" 
+                v-for="(location, index) in (historyData?.locations || []).slice(0, 10)" 
                 :key="index"
                 class="flex items-start space-x-3"
               >
                 <div class="w-2 h-2 bg-primary rounded-full mt-2"></div>
                 <div>
-                  <p class="text-white text-sm">{{ formatTime(location.timestamp) }}</p>
-                  <p class="text-gray-400 text-xs">{{ location.latitude.toFixed(4) }}, {{ location.longitude.toFixed(4) }}</p>
+                  <p class="text-white text-sm">{{ formatTime(location.timestamp || location.FechaHora) }}</p>
+                  <p class="text-gray-400 text-xs">
+                    {{ (location.latitude || location.Latitud)?.toFixed(4) }}, 
+                    {{ (location.longitude || location.Longitud)?.toFixed(4) }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -236,6 +239,12 @@ const loadHistory = async () => {
 }
 
 const initMap = () => {
+  const mapElement = document.getElementById('historyMap')
+  if (!mapElement) {
+    console.error('Map element not found')
+    return
+  }
+  
   if (map) {
     map.remove()
   }
@@ -251,10 +260,13 @@ const drawRoute = () => {
   if (!map || !historyData.value) return
   
   const locations = historyData.value.locations
-  if (locations.length === 0) return
+  if (!locations || locations.length === 0) return
   
-  // Draw route line
-  const latlngs = locations.map((loc: any) => [loc.latitude, loc.longitude])
+  // Draw route line - soporte para ambos formatos de datos
+  const latlngs = locations.map((loc: any) => [
+    loc.latitude || loc.Latitud, 
+    loc.longitude || loc.Longitud
+  ])
   L.polyline(latlngs, { color: '#FF6B35', weight: 3 }).addTo(map!)
   
   // Add start marker (RED = Inicio)
@@ -263,7 +275,10 @@ const drawRoute = () => {
     className: '',
     iconSize: [30, 30]
   })
-  L.marker([locations[0].latitude, locations[0].longitude], { icon: startIcon })
+  L.marker([
+    locations[0].latitude || locations[0].Latitud, 
+    locations[0].longitude || locations[0].Longitud
+  ], { icon: startIcon })
     .bindPopup('Inicio')
     .addTo(map!)
   
@@ -274,7 +289,10 @@ const drawRoute = () => {
     iconSize: [30, 30]
   })
   const lastLoc = locations[locations.length - 1]
-  L.marker([lastLoc.latitude, lastLoc.longitude], { icon: endIcon })
+  L.marker([
+    lastLoc.latitude || lastLoc.Latitud, 
+    lastLoc.longitude || lastLoc.Longitud
+  ], { icon: endIcon })
     .bindPopup('Fin')
     .addTo(map!)
   
