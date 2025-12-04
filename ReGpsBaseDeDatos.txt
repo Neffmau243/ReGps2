@@ -1,0 +1,457 @@
+-- ============================================
+-- BASE DE DATOS: ReGps - Sistema GPS Tracking
+-- Última actualización: 2025-11-17
+-- Framework: Laravel 11
+-- Base de datos: SQLite
+-- ============================================
+
+-- NOTA: Este esquema está implementado en Laravel con migraciones
+-- Las tablas se crean automáticamente con: php artisan migrate
+
+-- ============================================
+-- TABLAS PRINCIPALES
+-- ============================================
+
+-- 1. Tabla: usuarios
+CREATE TABLE roles (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    display_name VARCHAR(150),
+    description TEXT,
+    level INT,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    deleted_at TIMESTAMP NULL
+);
+
+-- 2. Tabla: users
+CREATE TABLE users (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) UNIQUE NOT NULL,
+    role_id BIGINT UNSIGNED NOT NULL,
+    first_name VARCHAR(120),
+    last_name VARCHAR(120),
+    email VARCHAR(150) UNIQUE NOT NULL,
+    phone VARCHAR(20) UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    avatar_url TEXT,
+    status ENUM('active', 'inactive', 'suspended') DEFAULT 'active',
+    email_verified_at TIMESTAMP NULL,
+    phone_verified_at TIMESTAMP NULL,
+    last_login_at TIMESTAMP NULL,
+    last_login_ip VARCHAR(45),
+    timezone VARCHAR(50),
+    locale VARCHAR(10),
+    two_factor_secret TEXT,
+    two_factor_enabled BOOLEAN DEFAULT FALSE,
+    remember_token VARCHAR(100),
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    deleted_at TIMESTAMP NULL,
+    FOREIGN KEY (role_id) REFERENCES roles(id)
+);
+
+-- 3. Tabla: user_profiles
+CREATE TABLE user_profiles (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT UNSIGNED NOT NULL,
+    company VARCHAR(150),
+    department VARCHAR(150),
+    position VARCHAR(150),
+    employee_code VARCHAR(50),
+    birth_date DATE,
+    address VARCHAR(255),
+    emergency_contact VARCHAR(255),
+    notes TEXT,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- 4. Tabla: user_sessions
+CREATE TABLE user_sessions (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT UNSIGNED NOT NULL,
+    token_hash VARCHAR(255) NOT NULL,
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    last_activity TIMESTAMP,
+    expires_at TIMESTAMP,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- 5. Tabla: activity_logs
+CREATE TABLE activity_logs (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT UNSIGNED NULL,
+    action VARCHAR(150),
+    description TEXT,
+    model_type VARCHAR(100),
+    model_id BIGINT UNSIGNED,
+    ip_address VARCHAR(45),
+    properties JSON,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- 6. Tabla: device_types
+CREATE TABLE device_types (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150),
+    category VARCHAR(100),
+    icon VARCHAR(100),
+    settings_schema JSON,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL
+);
+
+-- 7. Tabla: vehicles (se crea antes que devices porque devices hará referencia a vehicles)
+CREATE TABLE vehicles (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) UNIQUE NOT NULL,
+    company_id BIGINT UNSIGNED NULL,
+    brand VARCHAR(100),
+    model VARCHAR(100),
+    year INT,
+    plate VARCHAR(20) UNIQUE,
+    vin VARCHAR(17) UNIQUE,
+    color VARCHAR(50),
+    fuel_type ENUM('gasoline','diesel','electric'),
+    odometer_km INT,
+    status ENUM('active','maintenance','inactive'),
+    insurance_company VARCHAR(150),
+    insurance_policy VARCHAR(150),
+    insurance_expires_at DATE,
+    last_service_date DATE,
+    next_service_km INT,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    deleted_at TIMESTAMP NULL
+);
+
+-- 8. Tabla: devices
+CREATE TABLE devices (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) UNIQUE NOT NULL,
+    user_id BIGINT UNSIGNED NULL,
+    device_type_id BIGINT UNSIGNED NOT NULL,
+    vehicle_id BIGINT UNSIGNED NULL,  -- Nueva clave foránea para asociar a un vehículo
+    name VARCHAR(150),
+    serial VARCHAR(150) UNIQUE,
+    imei VARCHAR(20) UNIQUE,
+    model VARCHAR(150),
+    manufacturer VARCHAR(150),
+    os_version VARCHAR(50),
+    app_version VARCHAR(50),
+    battery_level INT,
+    status ENUM('active', 'inactive', 'maintenance', 'lost') DEFAULT 'active',
+    assigned_at TIMESTAMP NULL,
+    last_connection_at TIMESTAMP NULL,
+    settings JSON,
+    notes TEXT,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    deleted_at TIMESTAMP NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (device_type_id) REFERENCES device_types(id),
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(id)  -- Clave foránea a vehicles
+);
+
+-- 9. Tabla: gps_logs (con las mejoras sugeridas)
+CREATE TABLE gps_logs (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) UNIQUE NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    device_id BIGINT UNSIGNED NOT NULL,
+    trip_id BIGINT UNSIGNED NULL,
+    latitude DECIMAL(11,8),  -- Precisión aumentada
+    longitude DECIMAL(12,8), -- Precisión aumentada
+    accuracy DECIMAL(8,2),
+    speed DECIMAL(8,2),
+    heading DECIMAL(8,2),
+    altitude DECIMAL(8,2),
+    acceleration DECIMAL(8,2) NULL,  -- Nuevo campo
+    satellites INT,
+    battery_level INT,
+    network_type VARCHAR(50),
+    is_mock_location BOOLEAN,
+    address TEXT,
+    city VARCHAR(120),
+    state VARCHAR(120),
+    country VARCHAR(120),
+    event_type ENUM('position_update', 'trip_start', 'trip_end', 'stop_detected', 'movement_resumed') DEFAULT 'position_update',  -- Nuevo campo
+    location_source ENUM('gps', 'network', 'fused', 'manual') DEFAULT 'gps',  -- Nuevo campo
+    precision_level ENUM('high', 'medium', 'low', 'unknown') DEFAULT 'unknown',  -- Nuevo campo
+    timestamp TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    INDEX (device_id, timestamp),
+    INDEX (user_id, timestamp),
+    INDEX (trip_id),
+    INDEX idx_device_location_time (device_id, timestamp, latitude, longitude),  -- Índice compuesto
+    INDEX idx_user_time (user_id, timestamp),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (device_id) REFERENCES devices(id)
+);
+
+-- 10. Tabla: device_maintenances
+CREATE TABLE device_maintenances (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    device_id BIGINT UNSIGNED NOT NULL,
+    performed_by BIGINT UNSIGNED NOT NULL,
+    maintenance_type VARCHAR(150),
+    description TEXT,
+    cost DECIMAL(10,2),
+    next_maintenance_date DATE,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    FOREIGN KEY (device_id) REFERENCES devices(id),
+    FOREIGN KEY (performed_by) REFERENCES users(id)
+);
+
+-- 11. Tabla: trips
+CREATE TABLE trips (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) UNIQUE NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    device_id BIGINT UNSIGNED NOT NULL,
+    vehicle_id BIGINT UNSIGNED NULL,
+    name VARCHAR(150),
+    start_location_id BIGINT UNSIGNED NOT NULL,
+    end_location_id BIGINT UNSIGNED NULL,
+    started_at TIMESTAMP NOT NULL,
+    ended_at TIMESTAMP NULL,
+    status ENUM('in_progress', 'completed', 'paused') DEFAULT 'in_progress',
+    distance_km DECIMAL(10,2),
+    duration_minutes INT,
+    average_speed_kmh DECIMAL(8,2),
+    max_speed_kmh DECIMAL(8,2),
+    fuel_consumed_liters DECIMAL(8,2),
+    cost DECIMAL(10,2),
+    purpose VARCHAR(100),
+    notes TEXT,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    deleted_at TIMESTAMP NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (device_id) REFERENCES devices(id)
+);
+
+-- 12. Tabla: checkpoint_categories
+CREATE TABLE checkpoint_categories (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150),
+    description TEXT,
+    color VARCHAR(10),
+    icon VARCHAR(50),
+    sort_order INT,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL
+);
+
+-- 13. Tabla: checkpoints
+CREATE TABLE checkpoints (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) UNIQUE NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    checkpoint_category_id BIGINT UNSIGNED NOT NULL,
+    name VARCHAR(150),
+    description TEXT,
+    latitude DECIMAL(11,8),  -- Precisión aumentada
+    longitude DECIMAL(12,8), -- Precisión aumentada
+    radius INT,
+    address VARCHAR(255),
+    city VARCHAR(150),
+    state VARCHAR(150),
+    country VARCHAR(150),
+    postal_code VARCHAR(20),
+    color VARCHAR(7),
+    icon VARCHAR(50),
+    priority ENUM('low','medium','high','critical'),
+    active BOOLEAN,
+    visible_to_all BOOLEAN,
+    working_hours_start TIME,
+    working_hours_end TIME,
+    contact_name VARCHAR(150),
+    contact_phone VARCHAR(50),
+    contact_email VARCHAR(150),
+    settings JSON,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    deleted_at TIMESTAMP NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (checkpoint_category_id) REFERENCES checkpoint_categories(id)
+);
+
+-- 14. Tabla: checkpoint_visits
+CREATE TABLE checkpoint_visits (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    checkpoint_id BIGINT UNSIGNED NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    device_id BIGINT UNSIGNED NOT NULL,
+    trip_id BIGINT UNSIGNED NULL,
+    arrived_at TIMESTAMP NOT NULL,
+    departed_at TIMESTAMP NULL,
+    duration_minutes INT,
+    distance_from_center DECIMAL(8,2),
+    notes TEXT,
+    photos JSON,
+    signature_url TEXT,
+    verified_by BIGINT UNSIGNED NULL,
+    verified_at TIMESTAMP NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    FOREIGN KEY (checkpoint_id) REFERENCES checkpoints(id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (device_id) REFERENCES devices(id),
+    FOREIGN KEY (trip_id) REFERENCES trips(id),
+    FOREIGN KEY (verified_by) REFERENCES users(id)
+);
+
+-- 15. Tabla: geofences
+CREATE TABLE geofences (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) UNIQUE NOT NULL,
+    name VARCHAR(150),
+    description TEXT,
+    type ENUM('circle','polygon'),
+    coordinates JSON,
+    center_latitude DECIMAL(11,8),  -- Precisión aumentada
+    center_longitude DECIMAL(12,8), -- Precisión aumentada
+    radius INT,
+    color VARCHAR(10),
+    active BOOLEAN,
+    notify_on_enter BOOLEAN,
+    notify_on_exit BOOLEAN,
+    notify_on_dwell BOOLEAN,
+    dwell_threshold_minutes INT,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    deleted_at TIMESTAMP NULL
+);
+
+-- 16. Tabla: geofence_events
+CREATE TABLE geofence_events (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    geofence_id BIGINT UNSIGNED NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    device_id BIGINT UNSIGNED NOT NULL,
+    event_type ENUM('enter','exit','dwell'),
+    latitude DECIMAL(11,8),  -- Precisión aumentada
+    longitude DECIMAL(12,8), -- Precisión aumentada
+    timestamp TIMESTAMP,
+    notified BOOLEAN,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    FOREIGN KEY (geofence_id) REFERENCES geofences(id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (device_id) REFERENCES devices(id)
+);
+
+-- 17. Tabla: companies
+CREATE TABLE companies (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) UNIQUE NOT NULL,
+    name VARCHAR(150),
+    legal_name VARCHAR(150),
+    tax_id VARCHAR(50) UNIQUE,
+    email VARCHAR(150),
+    phone VARCHAR(50),
+    address VARCHAR(255),
+    city VARCHAR(150),
+    state VARCHAR(150),
+    country VARCHAR(150),
+    postal_code VARCHAR(50),
+    logo_url TEXT,
+    website TEXT,
+    subscription_plan VARCHAR(100),
+    subscription_expires_at DATE,
+    max_users INT,
+    max_devices INT,
+    active BOOLEAN,
+    settings JSON,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    deleted_at TIMESTAMP NULL
+);
+
+-- 18. Tabla: notifications
+CREATE TABLE notifications (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) UNIQUE NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    type VARCHAR(100),
+    title VARCHAR(150),
+    message TEXT,
+    data JSON,
+    read_at TIMESTAMP NULL,
+    action_url TEXT,
+    priority ENUM('low','medium','high','urgent'),
+    expires_at TIMESTAMP NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- 19. Tabla: reports
+CREATE TABLE reports (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) UNIQUE NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    name VARCHAR(150),
+    type VARCHAR(50),
+    parameters JSON,
+    schedule VARCHAR(100),
+    last_generated_at TIMESTAMP NULL,
+    next_generation_at TIMESTAMP NULL,
+    recipients JSON,
+    format ENUM('pdf','excel','csv'),
+    active BOOLEAN,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    deleted_at TIMESTAMP NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- 20. Tabla: alerts_rules
+CREATE TABLE alerts_rules (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) UNIQUE NOT NULL,
+    name VARCHAR(150),
+    description TEXT,
+    type ENUM('speed','idle','checkpoint','etc'),
+    conditions JSON,
+    actions JSON,
+    priority ENUM('low','medium','high','critical'),
+    active BOOLEAN,
+    created_by BIGINT UNSIGNED NOT NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    deleted_at TIMESTAMP NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id)
+);
+
+-- 21. Tabla: alerts
+CREATE TABLE alerts (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    uuid CHAR(36) UNIQUE NOT NULL,
+    alert_rule_id BIGINT UNSIGNED NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    device_id BIGINT UNSIGNED NOT NULL,
+    severity ENUM('info','warning','critical'),
+    message TEXT,
+    data JSON,
+    resolved BOOLEAN,
+    resolved_at TIMESTAMP NULL,
+    resolved_by BIGINT UNSIGNED NULL,
+    triggered_at TIMESTAMP,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    FOREIGN KEY (alert_rule_id) REFERENCES alerts_rules(id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (device_id) REFERENCES devices(id),
+    FOREIGN KEY (resolved_by) REFERENCES users(id)
+);
