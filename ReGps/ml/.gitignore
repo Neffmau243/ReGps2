@@ -1,0 +1,54 @@
+# Ignorar entorno virtual
+venv/
+env/
+ENV/
+
+# Ignorar archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Ignorar datos (pueden ser grandes)
+data/raw/*.csv
+data/raw/*.json
+data/processed/*.csv
+data/cache/*
+
+# Mantener estructura de carpetas
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/cache/.gitkeep
+
+# Ignorar modelos entrenados (pueden ser muy grandes)
+models/*.joblib
+models/*.pkl
+models/*.h5
+
+# Mantener metadata
+!models/metadata/
+
+# Ignorar notebooks con outputs
+.ipynb_checkpoints/
+*.ipynb
+
+# Excepto notebooks template
+!notebooks/template_*.ipynb
+
+# Ignorar archivos de entorno
+.env.ml
+*.env
+
+# Ignorar logs
+*.log
+
+# Ignorar archivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignorar archivos de sistema
+.DS_Store
+Thumbs.db

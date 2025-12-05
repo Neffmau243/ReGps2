@@ -4,12 +4,12 @@
       <!-- Header -->
       <div class="mb-10 flex items-center justify-between">
         <div>
-          <h1 class="text-4xl font-bold text-white mb-3">Dashboard</h1>
+          <h1 class="text-4xl font-bold text-white mb-4">Dashboard</h1>
           <p class="text-gray-400 text-lg">Monitoreo en tiempo real de dispositivos GPS</p>
         </div>
         <!-- WebSocket Status Indicator (Mejorado) -->
-        <div class="flex items-center gap-2 px-4 py-2 rounded-lg" :class="connectionClass">
-          <div class="w-2 h-2 rounded-full" :class="dotClass"></div>
+        <div class="flex items-center gap-3 px-5 py-3 rounded-lg" :class="connectionClass">
+          <div class="w-2.5 h-2.5 rounded-full" :class="dotClass"></div>
           <span class="text-sm font-medium" :class="textClass">
             {{ connectionText }}
           </span>
@@ -21,7 +21,7 @@
         <div class="stat-card">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-gray-400 text-sm mb-1 flex items-center gap-2">
+              <p class="text-gray-400 text-sm mb-2 flex items-center gap-2">
                 <i class="bi bi-phone-fill text-success"></i>
                 Dispositivos Activos
               </p>
@@ -33,7 +33,7 @@
         <div class="stat-card">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-gray-400 text-sm mb-1 flex items-center gap-2">
+              <p class="text-gray-400 text-sm mb-2 flex items-center gap-2">
                 <i class="bi bi-people-fill text-primary"></i>
                 Total Empleados
               </p>
@@ -45,7 +45,7 @@
         <div class="stat-card">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-gray-400 text-sm mb-1 flex items-center gap-2">
+              <p class="text-gray-400 text-sm mb-2 flex items-center gap-2">
                 <i class="bi bi-bell-fill text-warning"></i>
                 Alertas Hoy
               </p>
@@ -57,7 +57,7 @@
         <div class="stat-card">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-gray-400 text-sm mb-1 flex items-center gap-2">
+              <p class="text-gray-400 text-sm mb-2 flex items-center gap-2">
                 <i class="bi bi-geo-alt-fill text-info"></i>
                 Zonas Activas
               </p>
@@ -71,14 +71,14 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Map -->
         <div class="lg:col-span-2">
-          <div class="bg-dark-100 rounded-xl border border-primary/20 overflow-hidden">
-            <div class="p-4 border-b border-primary/20 flex items-center justify-between">
+          <div class="bg-black/30 backdrop-blur-md rounded-xl border border-primary/20 overflow-hidden">
+            <div class="p-6 border-b border-primary/20 flex items-center justify-between">
               <h2 class="text-xl font-bold text-white flex items-center">
                 Mapa en Tiempo Real
               </h2>
               <button 
                 @click="refreshLocations"
-                class="px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors text-sm"
+                class="px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors text-sm"
               >
                 Actualizar
               </button>
@@ -89,11 +89,11 @@
         
         <!-- Device List -->
         <div class="lg:col-span-1">
-          <div class="bg-dark-100 rounded-xl border border-primary/20">
+          <div class="bg-black/30 backdrop-blur-md rounded-xl border border-primary/20">
             <div class="p-6 border-b border-primary/20 bg-linear-to-r from-dark-100 to-transparent">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4">
-                  <div class="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
                     <i class="bi bi-phone-vibrate-fill text-primary text-xl"></i>
                   </div>
                   <div>
@@ -103,7 +103,7 @@
                 </div>
                 <button 
                   @click="refreshLocations"
-                  class="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center transition-all hover:scale-110"
+                  class="w-11 h-11 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center transition-all hover:scale-110"
                   title="Actualizar"
                 >
                   <i class="bi bi-arrow-clockwise text-base"></i>
@@ -117,11 +117,11 @@
                 class="device-card"
                 @click="centerMap(device)"
               >
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-5">
                   <!-- Info con mejor tipografía -->
                   <div class="flex-1 min-w-0">
-                    <h4 class="text-white font-bold text-base mb-1 truncate">{{ device.device_name }}</h4>
-                    <p class="text-gray-400 text-sm mb-1">
+                    <h4 class="text-white font-bold text-base mb-2 truncate">{{ device.device_name }}</h4>
+                    <p class="text-gray-400 text-sm mb-1.5">
                       {{ device.user_name }}
                     </p>
                     <p class="text-gray-500 text-xs">
@@ -132,14 +132,14 @@
                   <!-- Botón de acción mejorado -->
                   <button 
                     @click.stop="centerMap(device)"
-                    class="w-10 h-10 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center transition-all hover:scale-110 shrink-0"
+                    class="w-11 h-11 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center transition-all hover:scale-110 shrink-0"
                     title="Ver en mapa"
                   >
                   </button>
                 </div>
               </div>
               
-              <div v-if="devices.length === 0" class="text-center py-8">
+              <div v-if="devices.length === 0" class="text-center py-12">
                 <p class="text-gray-400">No hay dispositivos activos</p>
               </div>
             </div>

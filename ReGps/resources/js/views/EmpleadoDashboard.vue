@@ -393,26 +393,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.device-card {
-  padding: 1rem;
-  background-color: var(--color-dark-200);
-  border: 1px solid var(--color-dark-300);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.device-card:hover {
-  border-color: var(--color-primary);
-  background-color: var(--color-dark-100);
-}
-
-.device-card-active {
-  border-color: var(--color-primary);
-  background-color: rgba(255, 107, 53, 0.1);
-}
-
 #employeeMap {
-  border-radius: 0 0 0.75rem 0.75rem;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 </style>

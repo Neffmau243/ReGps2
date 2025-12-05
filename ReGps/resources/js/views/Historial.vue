@@ -418,59 +418,16 @@ const formatDuration = (minutes: number) => {
 </script>
 
 <style scoped>
-.input-compact {
-  width: 100%;
-  padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.input-compact:focus {
-  outline: none;
-  border-color: #FF6B35;
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
-}
-
-.input-compact option {
-  background: #1f2937;
-  color: #ffffff;
-  padding: 12px;
-}
-
-.btn-primary-compact {
-  display: inline-flex;
+:deep(.custom-marker) {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 16px;
-  background: linear-gradient(135deg, #FF6B35 0%, #FF8C5E 100%);
   color: white;
-  font-weight: 600;
-  font-size: 14px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.25);
-}
-
-.btn-primary-compact:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.35);
-}
-
-.btn-primary-compact:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-:deep(.custom-marker) {
-  @apply w-8 h-8 rounded-full flex items-center justify-center text-white text-xl shadow-lg;
+  font-size: 1.25rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 </style>
 ```

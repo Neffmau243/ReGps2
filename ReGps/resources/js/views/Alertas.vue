@@ -241,37 +241,5 @@ const viewDetails = (alerta: Alerta) => {
 </script>
 
 <style scoped>
-/* Alert Card Specific Styles */
-.alert-card {
-  background: transparent;
-  border: 1px solid rgba(255, 107, 53, 0.2);
-  border-radius: 12px;
-  padding: 24px;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.alert-card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: linear-gradient(180deg, #FF6B35 0%, #FF8C5E 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  border-radius: 12px 0 0 12px;
-}
-
-.alert-card:hover {
-  background: rgba(255, 107, 53, 0.05);
-  border-color: rgba(255, 107, 53, 0.4);
-  transform: translateX(4px);
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.15);
-}
-
-.alert-card:hover::before {
-  opacity: 1;
-}
+/* Styles already in app.css */
 </style>

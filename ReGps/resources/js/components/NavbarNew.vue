@@ -166,9 +166,10 @@ watch(() => route.path, () => {
   position: sticky;
   top: 0;
   z-index: 50000;
-  background: linear-gradient(135deg, #1a1d23 0%, #0f1115 100%);
+  background: linear-gradient(180deg, var(--color-dark-100) 0%, var(--color-dark) 100%);
   border-bottom: 1px solid rgba(255, 107, 53, 0.2);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .navbar-container {
