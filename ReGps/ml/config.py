@@ -40,24 +40,51 @@ MODEL_CONFIG = {
     "cv_folds": 5,  # Cross-validation folds
 }
 
+# Parámetros específicos por modelo
+MODEL_PARAMS = {
+    "eta": {
+        "n_estimators": 100,
+        "max_depth": 20,
+        "min_samples_split": 5,
+        "min_samples_leaf": 2,
+    },
+    "anomaly": {
+        "contamination": 0.15,
+        "n_estimators": 100,
+        "max_samples": 'auto',
+    },
+    "behavior": {
+        "n_estimators": 100,
+        "max_depth": 15,
+        "min_samples_split": 5,
+        "min_samples_leaf": 2,
+        "class_weight": "balanced",
+    }
+}
+
+# Umbrales de comportamiento y scoring
+BEHAVIOR_SCORE_THRESHOLDS = {
+    "speed_violation": -20,  # Penalización por exceso de velocidad
+    "restricted_zone": -30,  # Penalización por zona restringida
+    "missed_checkpoint": -15,  # Penalización por checkpoint no visitado
+    "unauthorized_stop": -10,  # Penalización por parada no autorizada
+    "checkpoint_bonus": 5,  # Bonus por visitar checkpoint
+}
+
+BEHAVIOR_CATEGORIES = {
+    "eficiente": (90, 100),  # Score entre 90-100
+    "normal": (60, 89),  # Score entre 60-89
+    "requiere_atencion": (0, 59),  # Score entre 0-59
+}
+
 # Configuración de Features
 FEATURE_CONFIG = {
     "min_speed": 0,  # km/h
     "max_speed": 200,  # km/h
     "min_distance": 0.001,  # km (1 metro)
-}
-
-# API Configuration
-API_CONFIG = {
-    "host": "0.0.0.0",
-    "port": 8001,
-    "reload": True,  # Solo en desarrollo
-}
-
-# Logging
-LOGGING_CONFIG = {
-    "level": "INFO",
-    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "speed_limit": 90,  # km/h - Límite empresarial
+    "stop_threshold": 5,  # km/h - Velocidad para considerar detenido
+    "erratic_change": 30,  # km/h - Cambio brusco de velocidad
 }
 
 print(f"✅ Configuración cargada desde: {BASE_DIR}")
